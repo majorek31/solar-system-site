@@ -10,11 +10,20 @@ body {
 
 header {
     padding: .5rem;
-    text-align: center;
     background-color: #333333;
     color: white;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
+}
+
+.header-title {
+    margin-left: 5rem;
+    float: left;
+}
+.header-menu {
+    float: right;
+}
+header h2 {
     letter-spacing: 6px;
 }
 
@@ -41,29 +50,36 @@ main {
     margin-bottom: 9px;
     font-size: 30px;
 }
+
 .block-header h2 {
     padding: .2em;
 }
+
 .block-info {
     font-size: 18px;
     text-indent: 15px;
 }
+
 hr {
     border: 0;
     border: 1px solid rgba(0, 0, 0, 0.342);
 }
+
 @media screen and (max-width: 768px) {
     main {
         margin: 3rem;
         margin-top: 15px;
     }
+
     header {
         font-size: 13px;
     }
+
     .block-header {
         font-weight: bold;
         font-size: 25px;
     }
+
     .block-info {
         font-size: 18px;
     }
