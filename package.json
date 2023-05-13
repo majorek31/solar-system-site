@@ -1,0 +1,18 @@
+{
+  "name": "solar-system-site",
+  "version": "1.0.0",
+  "description": "A website made for school project.",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "nodemon ./src"
+  },
+  "author": "majorek31",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
