@@ -64,6 +64,19 @@ router.post('/register', async (req, res) => {
             }
         });
     }
+    let doesUserExist = await prisma.user.findFirst({
+        where: {
+            name: req.body.username,
+        }
+    });
+    if (doesUserExist) {
+        return res.status(403).json({
+            status: 'user exists',
+            data: {
+                message: 'User with this name already exists!',
+            }
+        });
+    }
     let user = await prisma.user.create({
         data: {
             name: req.body.username,
