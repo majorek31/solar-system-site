@@ -11,19 +11,20 @@ model user {
   id             Int       @id @default(autoincrement())
   role           String?   @default(dbgenerated("USER")) @db.VarChar(20)
   dateOfRegister DateTime? @default(now()) @db.Date
-  name           String    @unique @db.VarChar(35)
+  name           String    @db.VarChar(35)
   password       String    @db.VarChar(256)
   like           like[]
   post           post[]
 }
 
 model post {
-  id          Int       @id @default(autoincrement())
-  title       String?   @db.VarChar(50)
-  author_id   Int?
-  timeCreated DateTime? @default(now()) @db.Date
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(50)
+  author_id   Int
+  timeCreated DateTime @default(now()) @db.Date
+  content     String?
   like        like[]
-  user        user?     @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user        user     @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model like {
