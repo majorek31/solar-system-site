@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="./style.css">
     <script src="./scripts/main.js" defer></script>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -15,7 +17,7 @@
                 <h1>Układ Sloneczny</h1>
             </div>
             <div class="header-menu">
-                <a href="/login">Zaloguj się</a>
+                <p id="login-zone"><a href="/login">Zaloguj się</a></p>
             </div>
         </header>
         <main>
@@ -25,12 +27,32 @@
                 <hr>
             </div>
             <div class="block block-info">
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis labore deserunt quis amet soluta repudiandae ipsum porro et placeat, similique consequatur animi! Nobis nisi in cumque atque, nihil officiis exercitationem, sunt id dolor vero hic magni reiciendis dignissimos, iste incidunt expedita natus deserunt possimus nemo culpa repellat esse tempore? At error alias quod earum blanditiis excepturi cumque libero? Autem repudiandae ab deleniti porro ipsum eligendi consequatur libero nesciunt perspiciatis ullam sunt quaerat quisquam nostrum iusto hic, consequuntur, cumque in perferendis minima. Praesentium voluptates quis maxime, cumque magni doloremque saepe veritatis, non officiis amet, perferendis doloribus obcaecati sit molestiae voluptatum consequuntur!</p>
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis labore deserunt quis amet soluta
+                    repudiandae ipsum porro et placeat, similique consequatur animi! Nobis nisi in cumque atque, nihil
+                    officiis exercitationem, sunt id dolor vero hic magni reiciendis dignissimos, iste incidunt expedita
+                    natus deserunt possimus nemo culpa repellat esse tempore? At error alias quod earum blanditiis
+                    excepturi cumque libero? Autem repudiandae ab deleniti porro ipsum eligendi consequatur libero
+                    nesciunt perspiciatis ullam sunt quaerat quisquam nostrum iusto hic, consequuntur, cumque in
+                    perferendis minima. Praesentium voluptates quis maxime, cumque magni doloremque saepe veritatis, non
+                    officiis amet, perferendis doloribus obcaecati sit molestiae voluptatum consequuntur!</p>
             </div>
         </main>
         <footer>
 
         </footer>
+        <script>
+            const loginZone = document.querySelector('#login-zone');
+            window.addEventListener('load', async e => {
+                let response = await (await fetch(`/api/user/`, {
+                    credentials: 'include'
+                })).json();
+                console.log(response);
+                if (response.status === 'success') {
+                    loginZone.innerHTML = `Witaj, <b>${response.data.user.name}</b>`;
+                }
+            });
+        </script>
     </div>
 </body>
+
 </html>

@@ -17,12 +17,16 @@ header {
 }
 
 .header-title {
-    margin-left: 5rem;
     float: left;
+    margin-left: 1em;
 }
+
 .header-menu {
     float: right;
+    margin-right: 1rem;
+    margin-top: 8px;
 }
+
 header h2 {
     letter-spacing: 6px;
 }

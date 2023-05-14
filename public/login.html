@@ -65,6 +65,9 @@
             letter-spacing: 3px;
             font-size: 23px;
         }
+        p {
+            margin-top: 15px;
+        }
     </style>
 </head>
 
@@ -76,11 +79,12 @@
         <main>
             <div class="login-form-wrapper">
                 <form id="login-form">
-                    <label for="login">Login</label>
-                    <input type="text" id="login">
+                    <label for="username">Login</label>
+                    <input type="text" id="username">
                     <label for="password">Hasło</label>
                     <input type="password" id="password">
                     <button type="submit">Zaloguj</button>
+                    <p></p>
                 </form>
             </div>
         </main>
@@ -90,8 +94,18 @@
     </div>
     <script>
         const form = document.getElementById("login-form");
-        form.addEventListener('submit', e => {
+        const p = document.querySelector('p');
+        window.addEventListener('load', e => {
+
+        });
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            let response = await (await fetch(`/api/auth/login?username=${form.username.value}&password=${form.password.value}`)).json();
+            if (response.status === 'success') {
+                location.pathname = '/';
+                return;
+            }
+            p.innerText = 'Nie prawidłowy login lub hasło!';
         });
     </script>
 </body>
