@@ -128,5 +128,65 @@ router.post('/', protectedEndpoint(), async (req, res) => {
         });
     }
 });
+router.delete('/:id', protectedEndpoint(), async (req, res) => {
+    let id = Number(req.params.id);
+    let token = await jwt.decode(req.cookies.jwt);
+    if (isNaN(id)) {
+        return res.status(400).json({
+            status: 'invalid request',
+            data: {
+                message: 'id must be a number',
+            }
+        });
+    }
+    try {
+        let post = await prisma.post.findUnique({
+            where: { id: id },
+        });
+        let { role } = await prisma.user.findUnique({
+            where: {
+                id: token.id,
+            },
+            select: {
+                role: true,
+            },
+        });
+        if (!post) {
+            return res.status(404).json({
+                status: 'not found',
+                data: {
+                    message: 'post not found',
+                }
+            });
+        }
+        if (token.id !== post.author_id && role !== 'admin') {
+            return res.status(403).json({
+                status: 'no access',
+                data: {
+                    message: 'post does not belong to you!',
+                }
+            });
+        }
+        await prisma.post.delete({
+            where: {
+                id: id,
+            },
+        });
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                message: 'post has been deleted',
+            }
+        });
+    } catch (err) {
+        if (err && process.env.NODE_ENV !== 'production') console.error(err);
+        return res.status(500).json({
+            status: 'internal error',
+            data: {
+                message: 'error with database',
+            }
+        });
+    }
+});
 
 module.exports = router;
