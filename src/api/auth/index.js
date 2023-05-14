@@ -71,6 +71,9 @@ router.post('/register', async (req, res) => {
             role: 'user'
         }
     });
+    let token = await jwt.sign({id: user.id}, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_TIMEOUT,
+    });
     user.password = undefined;
     res.cookie('jwt', token, {
         maxAge: 1000 * 60 * 60 * 24 * 30,
