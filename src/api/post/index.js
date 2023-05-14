@@ -41,6 +41,58 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id', async (req, res) => {
+    let id = Number(req.params.id);
+    if (isNaN(id)) {
+        return res.status(400).json({
+            status: 'invalid request',
+            data: {
+                message: 'id must be a number',
+            }
+        });
+    }
+    try {
+        let post = await prisma.post.findUnique({
+            where: {
+                id: id,
+            },
+            select: {
+                id: true,
+                content: true,
+                timeCreated: true,
+                title: true,
+                user: {
+                    select: {
+                        name: true,
+                    },
+                },
+            },
+        });
+        if (!post) {
+            return res.status(404).json({
+                status: 'not found',
+                data: {
+                    message: 'post not found',
+                }
+            });
+        }
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                post
+            }
+        });
+    } catch (err) {
+        if (err && process.env.NODE_ENV !== 'production') console.error(err);
+        return res.status(500).json({
+            status: 'internal error',
+            data: {
+                message: 'error while getting posts from database!',
+            }
+        });
+    }
+});
+
 router.post('/', protectedEndpoint(), async (req, res) => {
     if (!req.body.title || !req.body.content || !req.body.description) {
         return res.status(400).json({
