@@ -14,45 +14,56 @@ router.get('/login', async (req, res) => {
             }
         });
     }
-    let user = await prisma.user.findFirst({
-        where: {
-            name: req.query.username,         
+    try {
+        let user = await prisma.user.findFirst({
+            where: {
+                name: req.query.username,
+            }
+        });
+        if (!user) {
+            return res.status(403).json({
+                status: 'invalid credencials',
+                data: {
+                    message: 'username and password are invalid!',
+                }
+            });
         }
-    });
-    if (!user) {
-        return res.status(403).json({
-            status: 'invalid credencials',
+        let isCorrect = await bcrypt.compare(req.query.password, user.password);
+        if (!isCorrect) {
+            return res.status(403).json({
+                status: 'invalid credencials',
+                data: {
+                    message: 'username and password are invalid!',
+                }
+            });
+        }
+        else {
+            user.password = undefined;
+            let token = await jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+                expiresIn: process.env.JWT_TIMEOUT,
+            });
+            res.cookie('jwt', token, {
+                maxAge: 1000 * 60 * 60 * 24 * 30,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production' ? true : false
+            });
+            return res.status(200).json({
+                status: 'success',
+                data: {
+                    user,
+                }
+            });
+        }
+    } catch (err) {
+        if (err && process.env.NODE_ENV !== 'production') console.log(err);
+        return res.status(500).json({
+            status: 'internal error',
             data: {
-                message: 'username and password are invalid!',
+                message: 'database error',
             }
         });
     }
-    let isCorrect = await bcrypt.compare(req.query.password, user.password);
-    if (!isCorrect) {
-        return res.status(403).json({
-            status: 'invalid credencials',
-            data: {
-                message: 'username and password are invalid!',
-            }
-        });
-    }
-    else {
-        user.password = undefined;
-        let token = await jwt.sign({id: user.id}, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_TIMEOUT,
-        });
-        res.cookie('jwt', token, {
-            maxAge: 1000 * 60 * 60 * 24 * 30,
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production' ? true : false
-        });
-        return res.status(200).json({
-            status: 'success',
-            data: {
-                user,
-            }
-        });
-    }
+
 });
 
 router.post('/register', async (req, res) => {
@@ -64,41 +75,52 @@ router.post('/register', async (req, res) => {
             }
         });
     }
-    let doesUserExist = await prisma.user.findFirst({
-        where: {
-            name: req.body.username,
+    try {
+        let doesUserExist = await prisma.user.findFirst({
+            where: {
+                name: req.body.username,
+            }
+        });
+        if (doesUserExist) {
+            return res.status(403).json({
+                status: 'user exists',
+                data: {
+                    message: 'User with this name already exists!',
+                }
+            });
         }
-    });
-    if (doesUserExist) {
-        return res.status(403).json({
-            status: 'user exists',
+        let user = await prisma.user.create({
             data: {
-                message: 'User with this name already exists!',
+                name: req.body.username,
+                password: await bcrypt.hash(req.body.password, 10),
+                role: 'user'
+            }
+        });
+        let token = await jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_TIMEOUT,
+        });
+        user.password = undefined;
+        res.cookie('jwt', token, {
+            maxAge: 1000 * 60 * 60 * 24 * 30,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production' ? true : false
+        });
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                user,
+            }
+        });
+    } catch (err) {
+        if (err && process.env.NODE_ENV !== 'production') console.log(err);
+        return res.status(500).json({
+            status: 'internal error',
+            data: {
+                message: 'database error',
             }
         });
     }
-    let user = await prisma.user.create({
-        data: {
-            name: req.body.username,
-            password: await bcrypt.hash(req.body.password, 10),
-            role: 'user'
-        }
-    });
-    let token = await jwt.sign({id: user.id}, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_TIMEOUT,
-    });
-    user.password = undefined;
-    res.cookie('jwt', token, {
-        maxAge: 1000 * 60 * 60 * 24 * 30,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production' ? true : false
-    });
-    return res.status(200).json({
-        status: 'success',
-        data: {
-            user,
-        }
-    });
+
 });
 
 module.exports = router;
