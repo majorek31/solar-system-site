@@ -21,27 +21,43 @@
             </div>
         </header>
         <main>
-            <div class="block block-header">
+            <!-- <div class="block block-header">
                 <hr>
-                <h2>Lorem ipsum</h2>
+                <h2></h2>
                 <hr>
             </div>
             <div class="block block-info">
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veritatis labore deserunt quis amet soluta
-                    repudiandae ipsum porro et placeat, similique consequatur animi! Nobis nisi in cumque atque, nihil
-                    officiis exercitationem, sunt id dolor vero hic magni reiciendis dignissimos, iste incidunt expedita
-                    natus deserunt possimus nemo culpa repellat esse tempore? At error alias quod earum blanditiis
-                    excepturi cumque libero? Autem repudiandae ab deleniti porro ipsum eligendi consequatur libero
-                    nesciunt perspiciatis ullam sunt quaerat quisquam nostrum iusto hic, consequuntur, cumque in
-                    perferendis minima. Praesentium voluptates quis maxime, cumque magni doloremque saepe veritatis, non
-                    officiis amet, perferendis doloribus obcaecati sit molestiae voluptatum consequuntur!</p>
-            </div>
+                <p></p>
+            </div> -->
         </main>
         <footer>
 
         </footer>
         <script>
             const loginZone = document.querySelector('#login-zone');
+            const main = document.querySelector('main');
+            const displayPosts = async () => {
+                let response = await (await fetch(`/api/post/`, {
+                    credentials: 'include'
+                })).json();
+                if (response.status !== 'success') {
+                    return msg.innerHTML = 'Nie udało się pobrać danych, spróbuj ponownie później!';
+                }
+                console.log(response);
+                response.data.posts.forEach(e => {
+                    let msg = `
+                    <div class="block block-header">
+                        <hr>
+                        <h2>${e.title}</h2>
+                        <hr>
+                    </div>
+                    <div class="block block-info">
+                        <p>${e.description}</p>
+                    </div>
+                    `;
+                    main.innerHTML += msg;
+                });
+            };
             window.addEventListener('load', async e => {
                 let response = await (await fetch(`/api/user/`, {
                     credentials: 'include'
@@ -50,6 +66,7 @@
                 if (response.status === 'success') {
                     loginZone.innerHTML = `Witaj, <b>${response.data.user.name}</b>`;
                 }
+                displayPosts();
             });
         </script>
     </div>
