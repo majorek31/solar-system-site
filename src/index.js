@@ -22,6 +22,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 app.use('/api/auth', require('./api/auth'));
 app.use('/api/user', protectEndpoint, require('./api/user'));
+app.use('/api/post', require('./api/post'));
 
 app.listen(port, e => {
     if (e) throw e;
