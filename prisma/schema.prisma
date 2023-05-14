@@ -10,7 +10,17 @@ datasource db {
 model user {
   id             Int       @id @default(autoincrement())
   role           String?   @default(dbgenerated("USER")) @db.VarChar(20)
-  dateOfRegister DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  dateOfRegister DateTime? @default(now()) @db.Date
   name           String    @db.VarChar(35)
   password       String    @db.VarChar(256)
+  post           post[]
+}
+
+model post {
+  id          Int       @id @default(autoincrement())
+  title       String?   @db.VarChar(50)
+  author_id   Int?
+  likedBy     Int[]
+  timeCreated DateTime? @default(now()) @db.Date
+  user        user?     @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
