@@ -23,6 +23,7 @@ model post {
   author_id   Int
   timeCreated DateTime @default(now()) @db.Date
   content     String?
+  description String?  @db.VarChar(255)
   like        like[]
   user        user     @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
