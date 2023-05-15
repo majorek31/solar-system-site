@@ -17,6 +17,7 @@ app.use(cookieParser());
 
 app.use(rewrite('/', '/index.html'));
 app.use(rewrite('/login', '/login.html'));
+app.use(rewrite('/post', '/post.html'));
 
 app.use(express.static(path.join(__dirname, '../public')));
 
