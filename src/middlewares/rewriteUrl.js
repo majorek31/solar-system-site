@@ -4,7 +4,7 @@ const path = require('path');
 
 module.exports = (url, rewrite) => {
     return (req, res, next) => {
-        if (req.url == url) {
+        if (req._parsedUrl.pathname == url) {
             return res.sendFile(path.join(__dirname, `../../public/${rewrite}`));
         }
         next();
