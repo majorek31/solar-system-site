@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon ./src",
     "start": "node src",
-    "build": "npx prisma db push"
+    "build": "npm i && npx prisma db push"
   },
   "author": "majorek31",
   "license": "ISC",
