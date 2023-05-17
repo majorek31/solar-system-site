@@ -45,7 +45,18 @@
         textarea {
             margin-top: 20px;
             resize: none;
+            font-size: 14px;
         }
+        button {
+            margin-top: 20px;
+        }
+        input {
+            width: 250px;
+            height: 40px;
+            text-align: center;
+            font-size: 25px;
+        }
+        
     </style>
 </head>
 
@@ -63,9 +74,13 @@
             <h2>Utwórz nowy post</h2>
             <form>
                 <div class="head">
-                    <input type="text" id="title">
+                    <input type="text" id="title" placeholder="Tytuł">
                 </div>
-                <textarea id="content" cols="30" rows="10"></textarea>
+                <textarea id="description" placeholder="Krótki opis posta" cols="30" rows="5"></textarea>
+                <textarea id="content" cols="30" rows="35" placeholder="Treść posta"></textarea>
+                <div class="control">
+                    <button>Dodaj post</button>
+                </div>
             </form>
         </main>
         <footer>
@@ -74,10 +89,7 @@
     </div>
     <script>
         const loginZone = document.querySelector('#login-zone');
-        const postBody = document.querySelector('#post-body');
-        const postTitle = document.querySelector('#post-title');
-        const postAuthor = document.querySelector('#post-author');
-        const backButton = document.querySelector('#back-button');
+        const form = document.querySelector('form');
         window.addEventListener('load', async e => {
             let response = await (await fetch(`/api/user/`, {
                 credentials: 'include'
@@ -85,8 +97,24 @@
             console.log(response);
             if (response.status === 'success') {
                 loginZone.innerHTML = `Witaj, <b>${response.data.user.name}</b>`;
+            } else {
+                location.href = "/login";
             }
-        }); 
+        });
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            let response = await (await fetch(`/api/post`, {
+                method: 'POST',
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `title=${encodeURIComponent(form.title.value)}&content=${encodeURIComponent(form.content.value)}&description=${encodeURIComponent(form.description.value)}`
+            })).json();
+            if (response.status === 'success') {
+                location.href = `/post?id=${response.data.post.id}`;
+            }
+        });
     </script>
 </body>
 

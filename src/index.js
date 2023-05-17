@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const protectEndpoint = require('./middlewares/protectedEndpoint');
 const cors = require('cors');
+const { xss } = require('express-xss-sanitizer');
 
 dotenv.config();
 const port = process.env.PORT || 3000;
@@ -14,6 +15,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(xss());
 
 app.use(rewrite('/', '/index.html'));
 app.use(rewrite('/login', '/login.html'));
