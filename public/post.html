@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Układ Sloneczny</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./scripts/main.js" defer></script>
+    <style>
+        main {
+            margin: 15rem;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+        #post-author {
+            margin-top: 25px;
+            text-align: right;
+        }
+        button {
+            width: 120px;
+            height: 40px;
+            font-size: 20px;
+            border-radius: 15px;
+            border: 2px solid black;
+            box-shadow: 3px 2px 15px 2px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: ease-in-out .1s;
+        }
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.507);
+            transition: ease-in-out .1s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>Układ Sloneczny</h1>
+            </div>
+            <div class="header-menu">
+                <p id="login-zone"><a href="/login">Zaloguj się</a></p>
+            </div>
+        </header>
+        <main>
+            <div class="post">
+                <h2 id="post-title"></h2>
+                <div>
+                    <p id="post-body"></p>
+                    <p id="post-author"></p>
+                </div>
+            </div>
+            <div class="post-control">
+                <button id="back-button">Wróć</button>
+            </div>
+        </main>
+        <footer>
+
+        </footer>
+    </div>
+    <script>
+        const loginZone = document.querySelector('#login-zone');
+        const postBody = document.querySelector('#post-body');
+        const postTitle = document.querySelector('#post-title');
+        const postAuthor = document.querySelector('#post-author');
+        const backButton = document.querySelector('#back-button');
+        const displayPost = async () => {
+            let id = Number(new URL(location.href).searchParams.get('id'));
+            if (isNaN(id)) {
+                return main.innerHTML = "404: Nie znaleziono postu!";
+            }
+            let response = await (await fetch(`/api/post/${id}`, {
+                credentials: 'include'
+            })).json();
+            if (response.status === 'not found') {
+                return main.innerHTML = "404: Nie znaleziono postu!";
+            }
+            document.title = response.data.post.title;
+            postTitle.innerHTML = response.data.post.title;
+            postBody.innerHTML = response.data.post.content;
+            postAuthor.innerHTML = "Autor tekstu: " +  response.data.post.user.name;
+        }
+        window.addEventListener('load', async e => {
+            let response = await (await fetch(`/api/user/`, {
+                credentials: 'include'
+            })).json();
+            console.log(response);
+            if (response.status === 'success') {
+                loginZone.innerHTML = `Witaj, <b>${response.data.user.name}</b>`;
+            }
+            displayPost();
+        }); 
+        backButton.addEventListener('click', () => {
+            location.href = "/";
+        });
+    </script>
+</body>
+
+</html>

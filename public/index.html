@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Układ Sloneczny</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./scripts/main.js" defer></script>
+    <style>
+   
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>Układ Sloneczny - <a href="/writepost">Napisz własny post!</a></h1>
+            </div>
+            <div class="header-menu">
+                <p id="login-zone"><a href="/login">Zaloguj się</a></p>
+            </div>
+        </header>
+        <main>
+            <!-- <div class="post">
+                <div class="post-header">
+                    <a href="/post?id=1">Post</a>
+                </div>
+                <div class="post-body">
+                    <p></p>
+                </div>
+            </div> -->
+            <!-- <div class="block block-header">
+                <hr>
+                <h2></h2>
+                <hr>
+            </div>
+            <div class="block block-info">
+                <p></p>
+            </div> -->
+        </main>
+        <footer>
+
+        </footer>
+        <script>
+            const loginZone = document.querySelector('#login-zone');
+            const main = document.querySelector('main');
+            const displayPosts = async () => {
+                let response = await (await fetch(`/api/post/`, {
+                    credentials: 'include'
+                })).json();
+                if (response.status !== 'success') {
+                    return msg.innerHTML = 'Nie udało się pobrać danych, spróbuj ponownie później!';
+                }
+                console.log(response);
+                response.data.posts.forEach(e => {
+                    let msg = `
+                    <div class="block block-header">
+                        <h2><a href="/post?id=${e.id}">${e.title}</a></h2>
+                        </div>
+                        <div class="block block-info">
+                            <p>${e.description}</p>
+                        </div>
+                        <hr>
+                    `;
+                    main.innerHTML += msg;
+                });
+            };
+            window.addEventListener('load', async e => {
+                let response = await (await fetch(`/api/user/`, {
+                    credentials: 'include'
+                })).json();
+                console.log(response);
+                if (response.status === 'success') {
+                    loginZone.innerHTML = `Witaj, <b>${response.data.user.name}</b>`;
+                }
+                displayPosts();
+            });
+        </script>
+    </div>
+</body>
+
+</html>

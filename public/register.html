@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Układ Sloneczny</title>
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        header {
+            text-align: center;
+        }
+
+        main {
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .login-form-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 50vh;
+        }
+
+        #login-form {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 25px;
+        }
+
+        #login-form input[type="text"],
+        #login-form input[type="password"] {
+            width: 18rem;
+            border: 3px solid rgba(0, 0, 0, 0.521);
+            border-radius: 20px;
+            text-align: center;
+            height: 50px;
+            margin: 10px;
+            font-size: 30px;
+        }
+
+        button {
+            width: 200px;
+            margin-top: 15px;
+            margin-left: auto;
+            margin-right: auto;
+            cursor: pointer;
+            border: 3px solid gray;
+            border-radius: 15px;
+            height: 40px;
+            background-color: rgb(43, 43, 43);
+            color: white;
+            letter-spacing: 3px;
+            font-size: 23px;
+        }
+        p {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Logowanie</h1>
+        </header>
+        <main>
+            <div class="login-form-wrapper">
+                <form id="login-form">
+                    <label for="username">Login</label>
+                    <input type="text" id="username">
+                    <label for="password">Hasło</label>
+                    <input type="password" id="password">
+                    <button type="submit">Zarejestruj</button>
+                    <p></p>
+                    <p>Rejestrując się akceptujesz pliki cookies</p>
+                </form>
+            </div>
+        </main>
+        <footer>
+
+        </footer>
+    </div>
+    <script>
+        const form = document.getElementById("login-form");
+        const p = document.querySelector('p');
+        window.addEventListener('load', async e => {
+            let response = await (await fetch(`/api/user/`, {
+                credentials: 'include'
+            })).json();
+            console.log(response);
+            if (response.status === 'success') {
+                location.href = '/';
+            }
+        });
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let username = form.username.value.trim();
+            let password = form.password.value.trim();
+            if (!username || !password) {
+                return p.innerText = 'Wypełnij wszystkie pola formularza!';
+            }
+            let response = await (await fetch(`/api/auth/register`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })).json();
+            console.log(response, username, password);
+            if (response.status === 'success') {
+                return location.pathname = '/';;
+            }
+            else if (response.status === 'user exists') {
+                return p.innerText = 'Taki użytkownik już istnieje!';
+            }
+            p.innerText = 'Nie prawidłowy login lub hasło!';
+        });
+    </script>
+</body>
+
+</html>
