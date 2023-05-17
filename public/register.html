@@ -10,10 +10,8 @@
     <style>
         header {
             text-align: center;
-            display: flex;
-            justify-content: center;
-            flex-direction: column;
         }
+
         main {
             margin-left: 50px;
             margin-right: 50px;
@@ -70,11 +68,6 @@
         p {
             margin-top: 15px;
         }
-        a {
-            color: white;
-            text-decoration: none;
-
-        }
     </style>
 </head>
 
@@ -82,7 +75,6 @@
     <div class="container">
         <header>
             <h1>Logowanie</h1>
-            <p id="login-zone"><a href="/register">Rejestracja</a></p>
         </header>
         <main>
             <div class="login-form-wrapper">
@@ -91,8 +83,9 @@
                     <input type="text" id="username">
                     <label for="password">Hasło</label>
                     <input type="password" id="password">
-                    <button type="submit">Zaloguj</button>
+                    <button type="submit">Zarejestruj</button>
                     <p></p>
+                    <p>Rejestrując się akceptujesz pliki cookies</p>
                 </form>
             </div>
         </main>
@@ -114,10 +107,24 @@
         });
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            let response = await (await fetch(`/api/auth/login?username=${form.username.value}&password=${form.password.value}`)).json();
+            let username = form.username.value.trim();
+            let password = form.password.value.trim();
+            if (!username || !password) {
+                return p.innerText = 'Wypełnij wszystkie pola formularza!';
+            }
+            let response = await (await fetch(`/api/auth/register`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })).json();
+            console.log(response, username, password);
             if (response.status === 'success') {
-                location.pathname = '/';
-                return;
+                return location.pathname = '/';;
+            }
+            else if (response.status === 'user exists') {
+                return p.innerText = 'Taki użytkownik już istnieje!';
             }
             p.innerText = 'Nie prawidłowy login lub hasło!';
         });

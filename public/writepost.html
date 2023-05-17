@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Układ Sloneczny</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="./scripts/main.js" defer></script>
+    <style>
+        main {
+            margin: 15rem;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+        #post-author {
+            margin-top: 25px;
+            text-align: right;
+        }
+        button {
+            width: 120px;
+            height: 40px;
+            font-size: 20px;
+            border-radius: 15px;
+            border: 2px solid black;
+            box-shadow: 3px 2px 15px 2px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: ease-in-out .1s;
+        }
+        button:hover {
+            background-color: rgba(255, 255, 255, 0.507);
+            transition: ease-in-out .1s;
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+        textarea {
+            margin-top: 20px;
+            resize: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <h1>Układ Sloneczny</h1>
+            </div>
+            <div class="header-menu">
+                <p id="login-zone"><a href="/login">Zaloguj się</a></p>
+            </div>
+        </header>
+        <main>
+            <h2>Utwórz nowy post</h2>
+            <form>
+                <div class="head">
+                    <input type="text" id="title">
+                </div>
+                <textarea id="content" cols="30" rows="10"></textarea>
+            </form>
+        </main>
+        <footer>
+
+        </footer>
+    </div>
+    <script>
+        const loginZone = document.querySelector('#login-zone');
+        const postBody = document.querySelector('#post-body');
+        const postTitle = document.querySelector('#post-title');
+        const postAuthor = document.querySelector('#post-author');
+        const backButton = document.querySelector('#back-button');
+        window.addEventListener('load', async e => {
+            let response = await (await fetch(`/api/user/`, {
+                credentials: 'include'
+            })).json();
+            console.log(response);
+            if (response.status === 'success') {
+                loginZone.innerHTML = `Witaj, <b>${response.data.user.name}</b>`;
+            }
+        }); 
+    </script>
+</body>
+
+</html>

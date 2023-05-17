@@ -8,27 +8,30 @@
     <title>Układ Sloneczny</title>
     <link rel="stylesheet" href="./style.css">
     <script src="./scripts/main.js" defer></script>
+    <style>
+   
+    </style>
 </head>
 
 <body>
     <div class="container">
         <header>
             <div class="header-title">
-                <h1>Układ Sloneczny</h1>
+                <h1>Układ Sloneczny - <a href="/writepost">Napisz własny post!</a></h1>
             </div>
             <div class="header-menu">
                 <p id="login-zone"><a href="/login">Zaloguj się</a></p>
             </div>
         </header>
         <main>
-            <div class="post">
+            <!-- <div class="post">
                 <div class="post-header">
                     <a href="/post?id=1">Post</a>
                 </div>
                 <div class="post-body">
                     <p></p>
                 </div>
-            </div>
+            </div> -->
             <!-- <div class="block block-header">
                 <hr>
                 <h2></h2>
@@ -55,13 +58,12 @@
                 response.data.posts.forEach(e => {
                     let msg = `
                     <div class="block block-header">
+                        <h2><a href="/post?id=${e.id}">${e.title}</a></h2>
+                        </div>
+                        <div class="block block-info">
+                            <p>${e.description}</p>
+                        </div>
                         <hr>
-                        <h2>${e.title}</h2>
-                        <hr>
-                    </div>
-                    <div class="block block-info">
-                        <p>${e.description}</p>
-                    </div>
                     `;
                     main.innerHTML += msg;
                 });

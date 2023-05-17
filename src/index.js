@@ -18,6 +18,8 @@ app.use(cookieParser());
 app.use(rewrite('/', '/index.html'));
 app.use(rewrite('/login', '/login.html'));
 app.use(rewrite('/post', '/post.html'));
+app.use(rewrite('/writepost', '/writepost.html'));
+app.use(rewrite('/register', '/register.html'));
 
 app.use(express.static(path.join(__dirname, '../public')));
 

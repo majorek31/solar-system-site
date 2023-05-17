@@ -4,7 +4,9 @@
   "description": "A website made for school project.",
   "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon ./src"
+    "dev": "nodemon ./src",
+    "start": "node src",
+    "build": "npx prisma db push"
   },
   "author": "majorek31",
   "license": "ISC",
