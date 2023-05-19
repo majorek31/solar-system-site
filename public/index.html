@@ -8,8 +8,13 @@
     <title>Układ Sloneczny</title>
     <link rel="stylesheet" href="./style.css">
     <script src="./scripts/main.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-   
+        .clickable {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -47,6 +52,12 @@
         <script>
             const loginZone = document.querySelector('#login-zone');
             const main = document.querySelector('main');
+            let userId = 0;
+            const isAuthor = (id) => {
+                if (userId === 2)
+                    return true;
+                return userId === id;
+            }
             const displayPosts = async () => {
                 let response = await (await fetch(`/api/post/`, {
                     credentials: 'include'
@@ -56,9 +67,16 @@
                 }
                 console.log(response);
                 response.data.posts.forEach(e => {
+                    let i;
+                    if (isAuthor(e.user.id)) {
+                        i = document.createElement('i');
+                        i.className = 'fa-solid fa-trash-can fa-2xs clickable';
+                        i.style.color = "#ff0000";
+                        i.setAttribute('id', e.id);
+                    }
                     let msg = `
                     <div class="block block-header">
-                        <h2><a href="/post?id=${e.id}">${e.title}</a></h2>
+                        <h2><a href="/post?id=${e.id}">${e.title}</a> ${isAuthor(e.user.id) ? i.outerHTML : ''}</h2>
                         </div>
                         <div class="block block-info">
                             <p>${e.description}</p>
@@ -74,9 +92,22 @@
                 })).json();
                 console.log(response);
                 if (response.status === 'success') {
+                    userId = response.data.user.id;
                     loginZone.innerHTML = `Witaj, <b>${response.data.user.name}</b>`;
                 }
                 displayPosts();
+            });
+            main.addEventListener('click', async (e) => {
+                if (!e.target.classList.contains('fa-trash-can'))
+                    return;
+                if (confirm("Czy napewno chcesz usunac ten post?")) {
+                    let id = e.target.id;
+                    await fetch(`/api/post/${id}`, {
+                        credentials: 'include',
+                        method: 'DELETE'
+                    });
+                    location.reload();
+                }
             });
         </script>
     </div>
